@@ -10,24 +10,32 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    var itemArray: [TodoListItem] = [TodoListItem]() {
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
+    var itemArray: [TodoListItem] = [TodoListItem(intitle: "Create a New Task", indone: false)] {
         didSet {
             //defaults.set(self.itemArray, forKey: "TodoListArray")
+            let encoder = PropertyListEncoder()
+            
+            do {
+                let data = try encoder.encode(itemArray)
+                try data.write(to: dataFilePath!)
+            }
+            catch {
+                print("Error encoding item array \(error)")
+            }
+            
             tableView.reloadData()
         }
     }
     
-    let defaults = UserDefaults.standard
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        if let items = defaults.array(forKey: "TodoListArray") as? [TodoListItem] {
-            itemArray = items
-        } else {
-            itemArray.append(TodoListItem(intitle: "Create a New Task", indone: false))
-        }
+        
+        loadItems()
+        
     }
 
     //MARK: - Tableview Datasource Methods
@@ -64,12 +72,22 @@ class TodoListViewController: UITableViewController {
             //what to do
             if alert.textFields![0].text! != "" {
                 self.itemArray.append(TodoListItem(intitle: alert.textFields![0].text!, indone: false))
-                //self.tableView.reloadData()
             }
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
         
+    }
+    
+    func loadItems() {
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            let decoder = PropertyListDecoder()
+            do {
+                itemArray = try decoder.decode([TodoListItem].self, from: data)
+            } catch {
+                print("Error decoding item array \(error)")
+            }
+        }
     }
     
 }

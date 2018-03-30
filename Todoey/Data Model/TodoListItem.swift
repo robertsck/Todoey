@@ -8,21 +8,21 @@
 
 import Foundation
 
-class TodoListItem: Codable {
-    var title: String = ""
-    var done: Bool = false
-
-    convenience init(intitle: String, indone: Bool) {
-        self.init()
-        title = intitle
-        done = indone
-    }
-
-    func toggleDone() -> Bool {
-        done = !done
-        return done
-    }
-    
-}
+//class TodoListItem: Codable {
+//    var title: String = ""
+//    var done: Bool = false
+//
+//    convenience init(intitle: String, indone: Bool) {
+//        self.init()
+//        title = intitle
+//        done = indone
+//    }
+//
+//    func toggleDone() -> Bool {
+//        done = !done
+//        return done
+//    }
+//
+//}
 
 
